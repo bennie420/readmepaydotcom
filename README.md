@@ -1,5 +1,5 @@
 # READMEpay Open-Source README Sponsorship Platform
-[![Sponsorship Badge](https://readmepay.com/badge/bennie420/readmepaydotcom.svg?style=shield)](https://readmepay.com/click/active/1)
+[![Sponsorship Badge](https://readmepay.com/badge/bennie420/readmepaydotcom.svg?style=shield)](https://readmepay.com/click/active/1) [![Sponsorship Badge](https://readmepay.com/badge/bennie420/readmepaydotcom.svg)](https://readmepay.com/click/active/1)
 > Dynamic SVG README badge ad engine with live GitHub metadata, targeted sponsor campaigns, transparent click tracking, and a 50/50 maintainer revenue share.
 
 ---
