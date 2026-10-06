@@ -1,0 +1,38 @@
+# Environments & Secrets
+.env
+*.env
+*.env.*
+*.key
+*.pem
+.agents/
+
+# Python & Virtual Environments
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+.agents
+# Databases & SQLite
+*.db
+*.sqlite
+*.sqlite3
+badge_platform.db
+
+# Test & Coverage artifacts
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# Temporary / OS files
+tmp_sync.sh
+.DS_Store
+Thumbs.db
+*.bak
+*.tmp

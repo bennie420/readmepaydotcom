@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: opensponsor_app
+    restart: unless-stopped
+    environment:
+      - HOST=0.0.0.0
+      - PORT=8080
+      - DB_URL=sqlite:////data/badge_platform.db
+      - BASE_URL=https://opensponsor-4894.centralus.cloudapp.azure.com
+      - GITHUB_TOKEN=${GITHUB_TOKEN:-}
+      - SALT=${SALT:-os-badge-platform-secret-salt-2026}
+      - PAYPAL_CLIENT_ID=${PAYPAL_CLIENT_ID:-BAAM3pG8hSYlVJekBk1-_i7LxKclEr34lyTPMusFW11wQbPymwc3lrBe1QAIR_Ko-v-zvWeVN-tkGUd3Vs}
+      - PAYPAL_CLIENT_SECRET=${PAYPAL_CLIENT_SECRET:-EE-Lj5X3Rdm4IG86jzPlXKdO-DzVkq74ksikCVnE4-cel8k0EuZ-nFkSwP123SA2ZAkxbAtRpAvZjdn9}
+      - PAYPAL_MODE=sandbox
+
+    volumes:
+      - db_data:/data
+    expose:
+      - "8080"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: opensponsor_caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - DOMAIN=opensponsor-4894.centralus.cloudapp.azure.com
+
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      app:
+        condition: service_healthy
+
+volumes:
+  db_data:
+    driver: local
+  caddy_data:
+    driver: local
+  caddy_config:
+    driver: local

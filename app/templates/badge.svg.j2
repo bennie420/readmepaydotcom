@@ -1,0 +1,136 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="500"
+     height="110"
+     viewBox="0 0 500 110"
+     fill="none"
+     role="img"
+     aria-label="{{ repo_name }} sponsorship badge">
+  <style>
+    .base { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    .repo-title { font-size: 15px; font-weight: 700; fill: #58a6ff; }
+    .meta-text { font-size: 12px; font-weight: 500; fill: #e6edf3; }
+    .lang-text { font-size: 11px; font-weight: 500; fill: #c9d1d9; }
+    .ci-text { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+    .ad-card { cursor: pointer; transition: all 0.2s ease; }
+    .ad-card:hover { stroke: #58a6ff; }
+    .ad-tag { font-size: 9px; font-weight: 700; fill: #f0883e; letter-spacing: 0.5px; }
+    .sponsor-name { font-size: 11px; font-weight: 600; fill: #8b949e; }
+    .ad-headline { font-size: 11px; font-weight: 600; fill: #f0f6fc; }
+    .cta-text { font-size: 10px; font-weight: 600; fill: #ffffff; }
+    .cta-button { cursor: pointer; }
+    .cta-button:hover rect { fill: #2ea043; }
+    a { cursor: pointer; text-decoration: none; }
+    @media (prefers-color-scheme: light) {
+      .outer-card { fill: #ffffff !important; stroke: #d0d7de !important; }
+      .repo-title { fill: #0969da !important; }
+      .meta-text { fill: #24292f !important; }
+      .lang-text { fill: #57606a !important; }
+      .ad-inner-card { fill: #f6f8fa !important; stroke: #d0d7de !important; }
+      .ad-headline { fill: #24292f !important; }
+      .sponsor-name { fill: #57606a !important; }
+      .divider-line { stroke: #d0d7de !important; }
+    }
+  </style>
+
+  <!-- Outer Card Container -->
+  <rect class="outer-card" x="0.5" y="0.5" width="499" height="109" rx="8" fill="url(#cardBg)" stroke="#30363d" stroke-width="1"/>
+
+  <!-- Right Side: Sponsor Ad Card -->
+  <g class="base" id="sponsor-card">
+    {% if has_ad %}
+    <a href="{{ click_url }}" xlink:href="{{ click_url }}" target="_blank" rel="noopener noreferrer">
+      <!-- Clickable Card Rect -->
+      <rect class="ad-card ad-inner-card" x="262" y="10" width="228" height="90" rx="6" fill="url(#adBg)" stroke="#30363d" stroke-width="1"/>
+
+      <!-- Sponsor Badge & Name -->
+      <g transform="translate(272, 20)">
+        <rect x="0" y="0" width="56" height="14" rx="3" fill="#2d1c17"/>
+        <text x="28" y="10" text-anchor="middle" class="ad-tag">SPONSOR</text>
+        <text x="64" y="11" class="sponsor-name">{{ sponsor_name }}</text>
+      </g>
+
+      <!-- Headline -->
+      <g clip-path="url(#headlineClip)">
+        <text x="272" y="52" class="ad-headline">{{ headline }}</text>
+      </g>
+
+      <!-- Call to Action Button -->
+      <g class="cta-button" transform="translate(272, 70)">
+        <rect x="0" y="0" width="112" height="20" rx="4" fill="url(#btnBg)"/>
+        <text x="56" y="14" text-anchor="middle" class="cta-text">{{ cta_text }} &#x2192;</text>
+      </g>
+    </a>
+    {% else %}
+    <a href="{{ click_url | default('/onboard') }}" xlink:href="{{ click_url | default('/onboard') }}" target="_blank" rel="noopener noreferrer">
+      <!-- Fallback / Community Onboarding Card -->
+      <rect class="ad-card ad-inner-card" x="262" y="10" width="228" height="90" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1" stroke-dasharray="3,3"/>
+      <g transform="translate(272, 22)">
+        <rect x="0" y="0" width="56" height="14" rx="3" fill="#1f242c"/>
+        <text x="28" y="10" text-anchor="middle" class="ad-tag" fill="#8b949e">SUPPORT</text>
+        <text x="64" y="11" class="sponsor-name">Open Platform</text>
+      </g>
+      <text x="272" y="52" class="ad-headline">Sponsor this open-source project</text>
+      <g class="cta-button" transform="translate(272, 70)">
+        <rect x="0" y="0" width="112" height="20" rx="4" fill="#21262d"/>
+        <text x="56" y="14" text-anchor="middle" class="cta-text" fill="#58a6ff">Sponsor &#x2192;</text>
+      </g>
+    </a>
+    {% endif %}
+  </g>
+
+  <!-- Left Side: Repository Metadata (x: 16 to 245) -->
+  <g class="base" id="repo-metadata">
+    <!-- Repo Name -->
+    <g clip-path="url(#repoClip)">
+      <text x="16" y="32" class="repo-title">{{ repo_name }}</text>
+    </g>
+
+    <!-- Star Count with Star Icon -->
+    <g transform="translate(16, 46)">
+      <path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.75.75 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z" fill="#e3b341"/>
+      <text x="20" y="11" class="meta-text">{{ formatted_stars }}</text>
+    </g>
+
+    <!-- Language Pill & CI/CD Pill -->
+    <g transform="translate(16, 75)">
+      {% if language %}
+      <g id="lang-pill">
+        <circle cx="5" cy="10" r="4.5" fill="{{ lang_color }}"/>
+        <text x="14" y="14" class="lang-text">{{ language }}</text>
+      </g>
+      {% endif %}
+
+      {% if ci_status %}
+      <g id="ci-pill" transform="translate({% if language %}105{% else %}0{% endif %}, 0)">
+        <rect x="0" y="0" width="70" height="18" rx="9" fill="{{ ci_bg_color }}"/>
+        <text x="35" y="12" text-anchor="middle" fill="{{ ci_text_color }}" class="ci-text">{{ ci_status }}</text>
+      </g>
+      {% endif %}
+    </g>
+  </g>
+
+  <!-- Divider Line -->
+  <line class="divider-line" x1="252" y1="12" x2="252" y2="98" stroke="#30363d" stroke-width="1" stroke-dasharray="2,2"/>
+
+  <defs>
+    <linearGradient id="cardBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#161b22"/>
+      <stop offset="100%" stop-color="#0d1117"/>
+    </linearGradient>
+    <linearGradient id="adBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1f242c"/>
+      <stop offset="100%" stop-color="#161b22"/>
+    </linearGradient>
+    <linearGradient id="btnBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#238636"/>
+      <stop offset="100%" stop-color="#2ea043"/>
+    </linearGradient>
+    <clipPath id="repoClip">
+      <rect x="16" y="16" width="225" height="24"/>
+    </clipPath>
+    <clipPath id="headlineClip">
+      <rect x="272" y="38" width="206" height="28"/>
+    </clipPath>
+  </defs>
+</svg>

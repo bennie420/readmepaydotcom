@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="320"
+     height="28"
+     viewBox="0 0 320 28"
+     fill="none"
+     role="img"
+     aria-label="{{ repo_name }} sponsorship shield">
+  <style>
+    .base { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    .shield-title { font-size: 11px; font-weight: 700; fill: #ffffff; letter-spacing: 0.3px; }
+    .shield-body { font-size: 11px; font-weight: 600; fill: #ffffff; }
+    .shield-cta { font-size: 10px; font-weight: 700; fill: #2ea043; letter-spacing: 0.2px; }
+    a { cursor: pointer; text-decoration: none; }
+    a:hover .shield-bg-right { fill: #282e33; }
+    @media (prefers-color-scheme: light) {
+      .shield-bg-left { fill: #24292f; }
+      .shield-border { stroke: #d0d7de; }
+    }
+  </style>
+
+  <!-- Left Side: ReadmePay / Sponsor Brand Pill -->
+  <g class="base">
+    <a href="{{ click_url }}" xlink:href="{{ click_url }}" target="_blank" rel="noopener noreferrer">
+      <!-- Shield Outer Boundary with Rounded Corners -->
+      <clipPath id="shieldClip">
+        <rect x="0" y="0" width="320" height="28" rx="6"/>
+      </clipPath>
+
+      <g clip-path="url(#shieldClip)">
+        <!-- Left Banner: ReadmePay / Sponsor Tag -->
+        <rect class="shield-bg-left" x="0" y="0" width="82" height="28" fill="#161b22"/>
+        <text x="41" y="18" text-anchor="middle" class="shield-title">{% if has_ad %}SPONSOR{% else %}SPONSOR{% endif %}</text>
+
+        <!-- Right Banner: Sponsor Name or Support Message -->
+        <rect class="shield-bg-right" x="82" y="0" width="238" height="28" fill="#0d1117"/>
+        {% if has_ad %}
+        <text x="94" y="18" class="shield-body">{{ sponsor_name | truncate_text(18) }}</text>
+        <text x="308" y="18" text-anchor="end" class="shield-cta">{{ cta_text | truncate_text(12) }} &#x2192;</text>
+        {% else %}
+        <text x="94" y="18" class="shield-body">Sponsor {{ repo_name | truncate_text(14) }}</text>
+        <text x="308" y="18" text-anchor="end" class="shield-cta">&#x2665; Join &#x2192;</text>
+        {% endif %}
+      </g>
+
+      <!-- Border Stroke -->
+      <rect class="shield-border" x="0.5" y="0.5" width="319" height="27" rx="5.5" fill="none" stroke="#30363d" stroke-width="1"/>
+    </a>
+  </g>
+</svg>

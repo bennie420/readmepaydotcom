@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ReadmePay &mdash; Dynamic README Sponsorship & Badge Platform</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.ico">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#ecfdf5',
+              100: '#d1fae5',
+              400: '#34d399',
+              500: '#10b981',
+              600: '#059669',
+              700: '#047857',
+            },
+            accent: {
+              400: '#38bdf8',
+              500: '#0ea5e9',
+              600: '#0284c7',
+            },
+            dark: {
+              900: '#0b0f19',
+              800: '#111827',
+              700: '#1f2937',
+              600: '#374151',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+            mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #0b0f19;
+      color: #f3f4f6;
+    }
+    .glass-panel {
+      background: rgba(17, 24, 39, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .glass-card {
+      background: rgba(31, 41, 55, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      transition: all 0.2s ease-in-out;
+    }
+    .glass-card:hover {
+      border-color: rgba(16, 185, 129, 0.3);
+      transform: translateY(-2px);
+    }
+    .glow-emerald {
+      box-shadow: 0 0 25px -5px rgba(16, 185, 129, 0.2);
+    }
+    .tab-active {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(14, 165, 233, 0.15));
+      border-color: #10b981;
+      color: #34d399;
+    }
+    pre, code {
+      font-family: 'JetBrains Mono', monospace;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-brand-500 selection:text-white">
+
+  <!-- TOP NAVIGATION BAR -->
+  <header class="sticky top-0 z-50 glass-panel border-b border-gray-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('studio')">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-accent-500 flex items-center justify-center shadow-lg shadow-brand-500/20">
+          <i data-lucide="shield-check" class="w-6 h-6 text-white"></i>
+        </div>
+        <div>
+          <span class="text-xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-brand-400 via-teal-300 to-accent-400">
+            ReadmePay
+          </span>
+          <span class="hidden sm:inline-block ml-2 text-xs uppercase px-2 py-0.5 rounded-full bg-brand-500/10 text-brand-400 border border-brand-500/20 font-semibold tracking-wide">
+            Live Platform
+          </span>
+        </div>
+      </div>
+
+      <!-- Nav Tabs -->
+      <nav class="hidden md:flex items-center space-x-1">
+        <button onclick="switchTab('studio')" id="nav-studio" class="nav-btn px-3 py-1.5 rounded-lg text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-800/60 transition flex items-center space-x-1.5">
+          <i data-lucide="sparkles" class="w-4 h-4"></i>
+          <span>Badge Studio</span>
+        </button>
+        <button onclick="switchTab('maintainer')" id="nav-maintainer" class="nav-btn px-3 py-1.5 rounded-lg text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-800/60 transition flex items-center space-x-1.5">
+          <i data-lucide="award" class="w-4 h-4"></i>
+          <span>Claim & Onboard</span>
+        </button>
+        <button onclick="switchTab('revenue')" id="nav-revenue" class="nav-btn px-3 py-1.5 rounded-lg text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-800/60 transition flex items-center space-x-1.5">
+          <i data-lucide="line-chart" class="w-4 h-4"></i>
+          <span>Revenue Ledger</span>
+        </button>
+        <button onclick="switchTab('sponsors')" id="nav-sponsors" class="nav-btn px-3 py-1.5 rounded-lg text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-800/60 transition flex items-center space-x-1.5">
+          <i data-lucide="megaphone" class="w-4 h-4"></i>
+          <span>Sponsors</span>
+        </button>
+        <button onclick="switchTab('directory')" id="nav-directory" class="nav-btn px-3 py-1.5 rounded-lg text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-800/60 transition flex items-center space-x-1.5">
+          <i data-lucide="folder-git-2" class="w-4 h-4"></i>
+          <span>Repository Index</span>
+        </button>
+      </nav>
+
+      <!-- Right CTAs -->
+      <div class="flex items-center space-x-3">
+        <a href="/docs" target="_blank" class="px-3 py-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-xs font-semibold text-gray-300 hover:text-white border border-gray-700 transition flex items-center space-x-1.5">
+          <i data-lucide="book-open" class="w-3.5 h-3.5"></i>
+          <span>API Docs</span>
+        </a>
+        <div class="hidden lg:flex items-center space-x-2 text-xs text-emerald-400 bg-emerald-950/40 border border-emerald-800/50 px-2.5 py-1 rounded-full">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span>Zero-Mock Active</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN WRAPPER -->
+  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+    <!-- ========================================================================= -->
+    <!-- TAB 1: BADGE STUDIO (HERO & INTERACTIVE GENERATOR)                        -->
+    <!-- ========================================================================= -->
+    <section id="tab-studio" class="tab-content space-y-8">
+      <!-- Hero Headline -->
+      <div class="text-center max-w-3xl mx-auto pt-4 pb-2 space-y-4">
+        <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-400 text-xs font-semibold uppercase tracking-wider">
+          <i data-lucide="badge-dollar-sign" class="w-3.5 h-3.5"></i>
+          <span>Dynamic Open-Source README Monetization</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl font-black text-white tracking-tight leading-tight">
+          Monetize your GitHub README with <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-400 via-emerald-300 to-accent-400">Targeted Sponsor Badges</span>
+        </h1>
+        <p class="text-gray-400 text-base sm:text-lg">
+          Live GitHub metadata compilation, language-targeted tech sponsorships, transparent 50/50 revenue share, and zero fake mock fallbacks.
+        </p>
+      </div>
+
+      <!-- Interactive Generator Sandbox Card -->
+      <div class="glass-panel rounded-2xl p-6 sm:p-8 glow-emerald space-y-6">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-800 pb-5">
+          <div>
+            <h2 class="text-xl font-bold text-white flex items-center space-x-2">
+              <i data-lucide="sliders" class="w-5 h-5 text-brand-400"></i>
+              <span>Live Badge Studio & Snippet Generator</span>
+            </h2>
+            <p class="text-sm text-gray-400 mt-0.5">Enter any public GitHub repository to preview live compiled SVG and copy README markdown.</p>
+          </div>
+
+          <!-- Quick Presets -->
+          <div class="flex items-center space-x-2 flex-wrap">
+            <span class="text-xs text-gray-500 font-medium">Quick Presets:</span>
+            <button onclick="setStudioRepo('tiangolo', 'fastapi')" class="preset-btn px-2.5 py-1 text-xs rounded bg-gray-800 hover:bg-brand-900/40 hover:text-brand-300 text-gray-300 border border-gray-700 transition">tiangolo/fastapi</button>
+            <button onclick="setStudioRepo('pallets', 'flask')" class="preset-btn px-2.5 py-1 text-xs rounded bg-gray-800 hover:bg-brand-900/40 hover:text-brand-300 text-gray-300 border border-gray-700 transition">pallets/flask</button>
+            <button onclick="setStudioRepo('BurntSushi', 'ripgrep')" class="preset-btn px-2.5 py-1 text-xs rounded bg-gray-800 hover:bg-brand-900/40 hover:text-brand-300 text-gray-300 border border-gray-700 transition">BurntSushi/ripgrep</button>
+            <button onclick="setStudioRepo('astral-sh', 'uv')" class="preset-btn px-2.5 py-1 text-xs rounded bg-gray-800 hover:bg-brand-900/40 hover:text-brand-300 text-gray-300 border border-gray-700 transition">astral-sh/uv</button>
+          </div>
+        </div>
+
+        <!-- Input Bar -->
+        <div class="grid grid-cols-1 sm:grid-cols-12 gap-3">
+          <div class="sm:col-span-4">
+            <label class="block text-xs font-semibold text-gray-400 mb-1">GitHub Owner / Org</label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500">@</span>
+              <input type="text" id="input-owner" value="tiangolo" placeholder="e.g. tiangolo" class="w-full bg-gray-900/90 border border-gray-700 rounded-lg pl-8 pr-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500">
+            </div>
+          </div>
+          <div class="sm:col-span-5">
+            <label class="block text-xs font-semibold text-gray-400 mb-1">Repository Name</label>
+            <input type="text" id="input-repo" value="fastapi" placeholder="e.g. fastapi" class="w-full bg-gray-900/90 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500">
+          </div>
+          <div class="sm:col-span-3 flex items-end">
+            <button onclick="renderStudioBadge()" id="btn-generate" class="w-full bg-gradient-to-r from-brand-600 to-emerald-500 hover:from-brand-500 hover:to-emerald-400 text-white font-semibold py-2 px-4 rounded-lg text-sm shadow-md shadow-brand-600/30 transition flex items-center justify-center space-x-2">
+              <i data-lucide="refresh-cw" class="w-4 h-4" id="icon-refresh"></i>
+              <span>Render Badge</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Live Preview Stage -->
+        <div class="bg-gray-950 rounded-xl border border-gray-800 p-6 flex flex-col items-center justify-center space-y-4 relative overflow-hidden">
+          <div class="flex items-center justify-between w-full">
+            <div class="text-xs uppercase tracking-widest text-gray-500 font-semibold flex items-center space-x-2">
+              <i data-lucide="eye" class="w-3.5 h-3.5"></i>
+              <span>Live Compiled SVG Output</span>
+            </div>
+            <!-- Badge Format Selector -->
+            <div class="flex items-center space-x-1.5 bg-gray-900 border border-gray-800 p-1 rounded-lg">
+              <button onclick="setStudioStyle('banner')" id="btn-style-banner" class="px-2.5 py-1 text-xs rounded font-medium text-brand-300 bg-brand-500/15 border border-brand-500/30 transition flex items-center space-x-1">
+                <i data-lucide="layout" class="w-3 h-3"></i>
+                <span>Banner Card</span>
+              </button>
+              <button onclick="setStudioStyle('shield')" id="btn-style-shield" class="px-2.5 py-1 text-xs rounded font-medium text-gray-400 hover:text-gray-200 transition flex items-center space-x-1">
+                <i data-lucide="shield" class="w-3 h-3"></i>
+                <span>Shield Pill</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- The Live Badge Image -->
+          <div class="p-3 bg-gray-900/80 rounded-xl border border-gray-800 shadow-inner max-w-full overflow-x-auto flex justify-center">
+            <img id="badge-preview-img" src="/badge/tiangolo/fastapi.svg" alt="Dynamic Sponsorship Badge" class="max-w-full h-auto rounded transition duration-200" onerror="handlePreviewError()">
+          </div>
+
+          <div id="preview-meta" class="flex flex-wrap items-center justify-center gap-4 text-xs text-gray-400">
+            <span id="preview-stars" class="flex items-center space-x-1"><i data-lucide="star" class="w-3.5 h-3.5 text-yellow-400"></i><span>Loading stats...</span></span>
+            <span id="preview-lang" class="flex items-center space-x-1"><i data-lucide="code" class="w-3.5 h-3.5 text-cyan-400"></i><span>Language: ...</span></span>
+            <span id="preview-sponsor" class="flex items-center space-x-1"><i data-lucide="heart" class="w-3.5 h-3.5 text-pink-400"></i><span>Matched: ...</span></span>
+          </div>
+
+          <div class="flex items-center space-x-3 pt-2">
+            <a id="btn-test-click" href="#" target="_blank" class="px-3.5 py-1.5 rounded-lg bg-brand-500/15 hover:bg-brand-500/25 border border-brand-500/30 text-brand-300 text-xs font-semibold transition flex items-center space-x-1.5">
+              <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+              <span>Test Click & 302 Redirect</span>
+            </a>
+            <button onclick="claimCurrentRepo()" class="px-3.5 py-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 border border-gray-700 text-gray-300 text-xs font-semibold transition flex items-center space-x-1.5">
+              <i data-lucide="award" class="w-3.5 h-3.5 text-brand-400"></i>
+              <span>Claim This Repo</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- GitHub Camo Proxy Notice & Public Tunnel URL Configurator -->
+        <div class="rounded-xl border border-amber-500/30 bg-amber-950/30 p-4 space-y-3 text-xs">
+          <div class="flex items-start justify-between gap-2">
+            <div class="space-y-1">
+              <div class="flex items-center space-x-2 text-amber-300 font-bold">
+                <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-400 flex-shrink-0"></i>
+                <span>Why badges appear as broken links on GitHub.com:</span>
+              </div>
+              <p class="text-gray-300 leading-relaxed">
+                GitHub loads README images through its cloud proxy (<code class="text-amber-200 font-semibold">camo.githubusercontent.com</code>). Because GitHub's servers run in the cloud, they <strong class="text-white">cannot reach <code class="text-rose-300">localhost:8080</code></strong>. To render badges on a real GitHub repository, provide a publicly accessible HTTPS URL or local tunnel below.
+              </p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-12 gap-3 pt-1 border-t border-amber-500/20 items-center">
+            <div class="sm:col-span-4">
+              <label class="block text-[11px] font-semibold text-amber-300 mb-1">Badge Host / Public URL</label>
+              <input type="text" id="input-base-url" oninput="updateSnippetBox()" placeholder="http://localhost:8080 or https://xxxx.ngrok-free.app" class="w-full bg-gray-900 border border-amber-500/40 rounded-lg px-3 py-1.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-brand-500">
+            </div>
+            <div class="sm:col-span-8 flex flex-wrap items-center gap-2 text-[11px]">
+              <span class="text-gray-400 font-medium">Quick Tunnel:</span>
+              <button type="button" onclick="copyCommand('ngrok http 8080')" class="px-2.5 py-1 rounded bg-gray-900 hover:bg-gray-800 text-brand-300 border border-gray-700 font-mono transition flex items-center space-x-1">
+                <i data-lucide="terminal" class="w-3 h-3"></i>
+                <span>ngrok http 8080</span>
+              </button>
+              <button type="button" onclick="copyCommand('ssh -R 80:localhost:8080 nokey@localhost.run')" class="px-2.5 py-1 rounded bg-gray-900 hover:bg-gray-800 text-cyan-300 border border-gray-700 font-mono transition flex items-center space-x-1">
+                <i data-lucide="terminal" class="w-3 h-3"></i>
+                <span>ssh -R 80:localhost:8080 nokey@localhost.run</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Copy-Paste Snippet Box with Tabs -->
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+              <span class="text-xs font-bold uppercase tracking-wider text-gray-400">Embed Snippets:</span>
+              <button onclick="setSnippetTab('markdown')" id="btn-snip-markdown" class="snip-tab-btn px-2.5 py-1 text-xs rounded-md font-medium text-brand-300 bg-brand-500/10 border border-brand-500/30">Markdown</button>
+              <button onclick="setSnippetTab('html')" id="btn-snip-html" class="snip-tab-btn px-2.5 py-1 text-xs rounded-md font-medium text-gray-400 hover:text-gray-200">HTML</button>
+              <button onclick="setSnippetTab('rst')" id="btn-snip-rst" class="snip-tab-btn px-2.5 py-1 text-xs rounded-md font-medium text-gray-400 hover:text-gray-200">RST</button>
+              <button onclick="setSnippetTab('urls')" id="btn-snip-urls" class="snip-tab-btn px-2.5 py-1 text-xs rounded-md font-medium text-gray-400 hover:text-gray-200">Direct URLs</button>
+            </div>
+            <button onclick="copyCurrentSnippet()" class="px-3 py-1 rounded bg-brand-600 hover:bg-brand-500 text-white text-xs font-semibold transition flex items-center space-x-1.5 shadow">
+              <i data-lucide="copy" class="w-3.5 h-3.5" id="copy-icon"></i>
+              <span id="copy-btn-text">Copy Snippet</span>
+            </button>
+          </div>
+
+          <div class="relative">
+            <textarea id="snippet-code-box" readonly rows="3" class="w-full bg-gray-950 border border-gray-800 rounded-xl p-3.5 text-xs text-brand-200 font-mono focus:outline-none focus:border-brand-500 resize-none"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Value Props 3-Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
+        <div class="glass-card rounded-xl p-5 space-y-2.5">
+          <div class="w-9 h-9 rounded-lg bg-brand-500/10 border border-brand-500/20 flex items-center justify-center text-brand-400">
+            <i data-lucide="layers" class="w-5 h-5"></i>
+          </div>
+          <h3 class="text-base font-bold text-white">Dynamic SVG Engine</h3>
+          <p class="text-xs text-gray-400 leading-relaxed">
+            Compiled on-the-fly with Jinja2, live GitHub REST stars, and RFC 7232 ETag caching headers with HTTP 304 conditional delivery.
+          </p>
+        </div>
+
+        <div class="glass-card rounded-xl p-5 space-y-2.5">
+          <div class="w-9 h-9 rounded-lg bg-accent-500/10 border border-accent-500/20 flex items-center justify-center text-accent-400">
+            <i data-lucide="target" class="w-5 h-5"></i>
+          </div>
+          <h3 class="text-base font-bold text-white">Language-Targeted Ads</h3>
+          <p class="text-xs text-gray-400 leading-relaxed">
+            Advertisers match your repository's primary programming language (Python, Rust, Go, TS) with graceful fallback to general campaigns.
+          </p>
+        </div>
+
+        <div class="glass-card rounded-xl p-5 space-y-2.5">
+          <div class="w-9 h-9 rounded-lg bg-pink-500/10 border border-pink-500/20 flex items-center justify-center text-pink-400">
+            <i data-lucide="split" class="w-5 h-5"></i>
+          </div>
+          <h3 class="text-base font-bold text-white">50/50 Revenue Division</h3>
+          <p class="text-xs text-gray-400 leading-relaxed">
+            Maintainers receive an exact 50% split on every verified sponsor click, calculated via exact Decimal ledger mathematics.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- TAB 2: MAINTAINER ONBOARDING & CLAIMING                                   -->
+    <!-- ========================================================================= -->
+    <section id="tab-maintainer" class="tab-content hidden space-y-8">
+      <div class="max-w-3xl mx-auto space-y-6">
+        <div class="text-center space-y-2">
+          <h2 class="text-3xl font-extrabold text-white">Claim Your Repository</h2>
+          <p class="text-gray-400 text-sm">
+            Register your ownership, connect your payout destination, and start earning on every badge impression and verified click.
+          </p>
+        </div>
+
+        <div class="glass-panel rounded-2xl p-6 sm:p-8 space-y-6">
+          <!-- Exclusive Verified GitHub OAuth Authentication -->
+          <div class="bg-gradient-to-r from-gray-900 to-gray-800 border border-brand-500/50 rounded-xl p-6 space-y-4">
+            <div class="flex items-center space-x-3 text-brand-300 font-bold text-base">
+              <i data-lucide="shield-check" class="w-6 h-6 text-brand-400"></i>
+              <span>GitHub Maintainer OAuth Verification</span>
+            </div>
+            <p class="text-xs text-gray-300 leading-relaxed">
+              To prevent fraudulent claims, repository payouts require authentic cryptographic verification via GitHub OAuth. You must be the repository owner or have admin/write permissions.
+            </p>
+            <div class="space-y-3 pt-2">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-xs font-semibold text-gray-400 mb-1">GitHub Owner / Org <span class="text-rose-400">*</span></label>
+                  <input type="text" id="oauth-claim-owner" required placeholder="e.g. tiangolo or your-org" class="w-full bg-gray-950 border border-gray-700 rounded-lg px-3 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-brand-500">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-gray-400 mb-1">Repository Name <span class="text-rose-400">*</span></label>
+                  <input type="text" id="oauth-claim-repo" required placeholder="e.g. fastapi" class="w-full bg-gray-950 border border-gray-700 rounded-lg px-3 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-brand-500">
+                </div>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-gray-400 mb-1">Maintainer Payout Destination <span class="text-brand-400">*</span></label>
+                <input type="text" id="oauth-claim-payout" placeholder="PayPal email address or crypto wallet" class="w-full bg-gray-950 border border-gray-700 rounded-lg px-3 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-brand-500">
+                <p class="text-[11px] text-gray-500 mt-1">Automated 50/50 revenue share will be deposited here monthly.</p>
+              </div>
+            </div>
+            <button type="button" onclick="launchGitHubOAuthClaim()" class="w-full mt-3 bg-[#24292f] hover:bg-[#1b1f23] border border-gray-600 text-white font-bold py-3 px-4 rounded-lg text-sm shadow-xl transition flex items-center justify-center space-x-2">
+              <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+              <span>Authenticate with GitHub & Claim Payouts</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- TAB 3: REVENUE LEDGER & MAINTAINER DASHBOARD                              -->
+    <!-- ========================================================================= -->
+    <section id="tab-revenue" class="tab-content hidden space-y-8">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-white">Financial Ledger & Revenue Share</h2>
+          <p class="text-gray-400 text-sm mt-0.5">Transparent 50/50 division metrics for claimed repositories and maintainers.</p>
+        </div>
+
+        <div class="flex items-center space-x-2">
+          <input type="text" id="revenue-search-input" placeholder="Maintainer handle or Repo ID" class="bg-gray-900 border border-gray-700 rounded-lg px-3 py-1.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-brand-500">
+          <button onclick="searchRevenue()" class="px-3 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white text-xs font-semibold transition">Lookup</button>
+        </div>
+      </div>
+
+      <!-- KPI Summary Cards -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="glass-card rounded-xl p-4 space-y-1">
+          <div class="text-xs text-gray-400 font-medium">Gross Ad Revenue</div>
+          <div id="kpi-gross" class="text-2xl font-black text-white">$0.00</div>
+          <div class="text-[10px] text-gray-500">100% Sponsor Spend</div>
+        </div>
+
+        <div class="glass-card rounded-xl p-4 space-y-1 border-brand-500/30">
+          <div class="text-xs text-brand-400 font-semibold">Maintainer Earnings (50%)</div>
+          <div id="kpi-maintainer" class="text-2xl font-black text-brand-300">$0.00</div>
+          <div class="text-[10px] text-brand-500/80">Available for Payout</div>
+        </div>
+
+        <div class="glass-card rounded-xl p-4 space-y-1">
+          <div class="text-xs text-gray-400 font-medium">Platform Fee (50%)</div>
+          <div id="kpi-platform" class="text-2xl font-black text-gray-300">$0.00</div>
+          <div class="text-[10px] text-gray-500">Infrastructure & GitHub API</div>
+        </div>
+
+        <div class="glass-card rounded-xl p-4 space-y-1">
+          <div class="text-xs text-gray-400 font-medium">Total Clicks & Impressions</div>
+          <div id="kpi-clicks" class="text-2xl font-black text-accent-400">0 Clicks</div>
+          <div id="kpi-impressions" class="text-[10px] text-gray-500">0 Impressions (0.0% CTR)</div>
+        </div>
+      </div>
+
+      <!-- Detailed Revenue Report Box -->
+      <div class="glass-panel rounded-2xl p-6 space-y-4">
+        <h3 class="text-base font-bold text-white flex items-center space-x-2">
+          <i data-lucide="receipt" class="w-4 h-4 text-brand-400"></i>
+          <span id="revenue-report-title">Repository Revenue Breakdown (Repo #1)</span>
+        </h3>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs text-gray-300">
+            <thead class="text-gray-400 uppercase bg-gray-900/60 border-b border-gray-800">
+              <tr>
+                <th class="px-4 py-3">Metric</th>
+                <th class="px-4 py-3">Value</th>
+                <th class="px-4 py-3">Ledger Formula</th>
+              </tr>
+            </thead>
+            <tbody id="revenue-table-body" class="divide-y divide-gray-800">
+              <tr>
+                <td class="px-4 py-3 font-medium text-white">Gross Revenue</td>
+                <td id="rev-cell-gross" class="px-4 py-3 text-brand-300 font-mono">$0.00</td>
+                <td class="px-4 py-3 text-gray-500">Sum of (CPC &times; Verified Clicks)</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-medium text-white">Maintainer Share</td>
+                <td id="rev-cell-maintainer" class="px-4 py-3 text-brand-400 font-mono font-bold">$0.00</td>
+                <td class="px-4 py-3 text-gray-500">50.0% of Gross Revenue</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-medium text-white">Platform Cut</td>
+                <td id="rev-cell-platform" class="px-4 py-3 text-gray-400 font-mono">$0.00</td>
+                <td class="px-4 py-3 text-gray-500">50.0% of Gross Revenue</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-medium text-white">Verified Clicks</td>
+                <td id="rev-cell-clicks" class="px-4 py-3 font-mono">0</td>
+                <td class="px-4 py-3 text-gray-500">Unique SHA-256 client hash tracking</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-medium text-white">Deduplicated Impressions</td>
+                <td id="rev-cell-impressions" class="px-4 py-3 font-mono">0</td>
+                <td class="px-4 py-3 text-gray-500">1-hour sliding-window audit dedup</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- TAB 4: SPONSOR CAMPAIGNS & ADVERTISER HUB                                 -->
+    <!-- ========================================================================= -->
+    <section id="tab-sponsors" class="tab-content hidden space-y-8">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-white">Sponsor Campaigns & Advertiser Hub</h2>
+          <p class="text-gray-400 text-sm mt-0.5">Reach thousands of active software engineers directly inside GitHub README files.</p>
+        </div>
+        <button onclick="openCreateCampaignModal()" class="px-4 py-2.5 rounded-lg bg-gradient-to-r from-brand-600 to-accent-500 hover:from-brand-500 hover:to-accent-400 text-white text-xs font-bold shadow-lg shadow-brand-500/20 transition flex items-center space-x-2">
+          <i data-lucide="plus-circle" class="w-4 h-4"></i>
+          <span>Create & Fund Ad Campaign</span>
+        </button>
+      </div>
+
+      <!-- Sponsor Campaigns Grid -->
+      <div id="sponsors-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Dynamic Cards Loaded via JS -->
+      </div>
+    </section>
+
+    <!-- CREATE & FUND AD CAMPAIGN MODAL -->
+    <div id="modal-campaign" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+      <div class="bg-gray-900 border border-gray-700 rounded-2xl max-w-xl w-full max-h-[90vh] flex flex-col shadow-2xl">
+        <div class="p-6 border-b border-gray-800 flex items-center justify-between">
+          <div class="flex items-center space-x-2 text-white font-bold text-base">
+            <i data-lucide="megaphone" class="w-5 h-5 text-brand-400"></i>
+            <span>Create & Fund Sponsor Campaign</span>
+          </div>
+          <button onclick="closeCampaignModal()" class="text-gray-400 hover:text-white p-1 rounded-lg hover:bg-gray-800 transition">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+        <form id="form-create-campaign" onsubmit="submitNewCampaign(event)" class="p-6 overflow-y-auto space-y-4 text-xs">
+          <div>
+            <label class="block font-semibold text-gray-300 mb-1">Company / Product Name <span class="text-rose-400">*</span></label>
+            <input type="text" id="ad-sponsor-name" required placeholder="e.g. Supabase, Datadog, Neon" class="w-full bg-gray-950 border border-gray-700 rounded-lg px-3 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-brand-500">
+          </div>
+
+          <div>
+            <label class="block font-semibold text-gray-300 mb-1">Headline Pitch <span class="text-rose-400">*</span></label>
+            <input type="text" id="ad-headline" required placeholder="e.g. Serverless Postgres with instant branching" class="w-full bg-gray-950 border border-gray-700 rounded-lg px-3 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-brand-500">
+            <p class="text-[11px] text-gray-500 mt-1">Short, punchy pitch displayed inside the README badge ad card.</p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block font-semibold text-gray-300 mb-1">Call to Action <span class="text-rose-400">*</span></label>
+              <input type="text" id="ad-cta" required placeholder="e.g. Start Free, Try Now" value="Learn More" class="w-full bg-gray-950 border border-gray-700 rounded-lg px-3 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-brand-500">
+            </div>
+            <div>
+              <label class="block font-semibold text-gray-300 mb-1">Target Language <span class="text-rose-400">*</span></label>
+              <select id="ad-target-lang" class="w-full bg-gray-950 border border-gray-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-brand-500">
+                <option value="General">All Languages (General Fallback)</option>
+                <option value="Python">Python</option>
+                <option value="TypeScript">TypeScript / JavaScript</option>
+                <option value="Rust">Rust</option>
+                <option value="Go">Go (Golang)</option>
+                <option value="Java">Java / Kotlin</option>
+                <option value="C++">C / C++</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="block font-semibold text-gray-300 mb-1">Destination URL (Tracking redirect destination) <span class="text-rose-400">*</span></label>
+            <input type="url" id="ad-click-url" required placeholder="https://yourproduct.com/?ref=readmepay" class="w-full bg-gray-950 border border-gray-700 rounded-lg px-3 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-brand-500">
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1 border-t border-gray-800">
+            <div>
+              <label class="block font-semibold text-gray-300 mb-1">Deposit Budget (USD) <span class="text-rose-400">*</span></label>
+              <input type="number" id="ad-budget" required min="5" step="5" value="50.00" class="w-full bg-gray-950 border border-gray-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-brand-500">
+            </div>
+            <div>
+              <label class="block font-semibold text-gray-300 mb-1">Max Cost Per Click (USD)</label>
+              <input type="number" id="ad-cpc" required min="0.10" step="0.05" value="0.50" class="w-full bg-gray-950 border border-gray-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-brand-500">
+            </div>
+          </div>
+
+          <!-- Checkout Method Selection -->
+          <div class="p-3 bg-gray-950/80 border border-gray-800 rounded-xl space-y-2">
+            <label class="block font-semibold text-gray-300">Choose Deposit Method:</label>
+            <div class="grid grid-cols-2 gap-3">
+              <label class="flex items-center space-x-2 p-2.5 rounded-lg border border-gray-700 bg-gray-900 cursor-pointer hover:border-brand-500">
+                <input type="radio" name="payment_method" value="paypal" checked class="text-brand-500">
+                <span class="text-xs font-semibold text-white">PayPal Checkout</span>
+              </label>
+              <label class="flex items-center space-x-2 p-2.5 rounded-lg border border-gray-700 bg-gray-900 cursor-pointer hover:border-brand-500">
+                <input type="radio" name="payment_method" value="crypto" class="text-brand-500">
+                <span class="text-xs font-semibold text-white">Crypto (USDC/SOL)</span>
+              </label>
+            </div>
+          </div>
+
+          <div id="campaign-submit-status" class="hidden text-xs p-3 rounded-lg"></div>
+
+          <button type="submit" id="btn-create-campaign" class="w-full bg-brand-600 hover:bg-brand-500 text-white font-bold py-2.5 px-4 rounded-lg text-xs shadow-lg transition flex items-center justify-center space-x-2">
+            <i data-lucide="credit-card" class="w-4 h-4"></i>
+            <span>Continue to Payment Checkout</span>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- TAB 5: REPOSITORY DIRECTORY & INVENTORY                                   -->
+    <!-- ========================================================================= -->
+    <section id="tab-directory" class="tab-content hidden space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-white">Repository Directory</h2>
+          <p class="text-gray-400 text-sm mt-0.5">Indexed open-source repositories ready for dynamic README sponsorship.</p>
+        </div>
+        <div class="w-full sm:w-72">
+          <input type="text" id="dir-search-input" onkeyup="filterDirectoryTable()" placeholder="Search repositories..." class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-brand-500">
+        </div>
+      </div>
+
+      <div class="glass-panel rounded-2xl overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs text-gray-300">
+            <thead class="text-gray-400 uppercase bg-gray-900/80 border-b border-gray-800">
+              <tr>
+                <th class="px-4 py-3">Repository</th>
+                <th class="px-4 py-3">Language</th>
+                <th class="px-4 py-3">Live Stars</th>
+                <th class="px-4 py-3">Claim Status</th>
+                <th class="px-4 py-3 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="directory-table-body" class="divide-y divide-gray-800">
+              <!-- Loaded via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER WITH TRUST SIGNALS, PRIVACY POLICY & TERMS -->
+  <footer class="border-t border-gray-800 glass-panel mt-12 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+      <!-- Trust & Verification Notice -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 p-4 rounded-xl bg-gray-900/60 border border-gray-800 text-xs">
+        <div class="space-y-1">
+          <div class="flex items-center space-x-1.5 text-gray-300 font-semibold">
+            <i data-lucide="shield-check" class="w-4 h-4 text-brand-400"></i>
+            <span>Official GitHub OAuth App</span>
+          </div>
+          <p class="text-gray-400 leading-relaxed text-[11px]">
+            Uses GitHub's standard OAuth2 protocol strictly to verify repository collaborator permissions. We never store passwords or modify code.
+          </p>
+        </div>
+        <div class="space-y-1">
+          <div class="flex items-center space-x-1.5 text-gray-300 font-semibold">
+            <i data-lucide="lock" class="w-4 h-4 text-cyan-400"></i>
+            <span>TLS / SSL Encryption</span>
+          </div>
+          <p class="text-gray-400 leading-relaxed text-[11px]">
+            All HTTP traffic is encrypted end-to-end via Let's Encrypt automated TLS certificates with strict transport security.
+          </p>
+        </div>
+        <div class="space-y-1">
+          <div class="flex items-center space-x-1.5 text-gray-300 font-semibold">
+            <i data-lucide="coins" class="w-4 h-4 text-amber-400"></i>
+            <span>50/50 Transparent Revenue</span>
+          </div>
+          <p class="text-gray-400 leading-relaxed text-[11px]">
+            Ad impression revenues are accounted with decimal precision and remitted monthly directly to maintainers via PayPal or Crypto.
+          </p>
+        </div>
+      </div>
+
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-500 pt-2 border-t border-gray-800/60">
+        <div>
+          <span class="font-bold text-gray-400">&copy; 2026 ReadmePay Platform</span> &mdash; Open-source developer tools infrastructure.
+        </div>
+        <div class="flex flex-wrap items-center gap-4">
+          <button onclick="openModal('privacy')" class="hover:text-brand-400 transition underline underline-offset-4">Privacy Policy</button>
+          <button onclick="openModal('terms')" class="hover:text-brand-400 transition underline underline-offset-4">Terms of Service</button>
+          <button onclick="openModal('security')" class="hover:text-brand-400 transition underline underline-offset-4">Security & OAuth Disclosure</button>
+          <a href="/health" target="_blank" class="hover:text-brand-400 transition">System Status</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- TRUST & COMPLIANCE MODAL -->
+  <div id="trust-modal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-gray-900 border border-gray-700 rounded-2xl max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl">
+      <div class="p-6 border-b border-gray-800 flex items-center justify-between">
+        <h3 id="modal-title" class="text-lg font-bold text-white">Trust & Compliance</h3>
+        <button onclick="closeModal()" class="text-gray-400 hover:text-white p-1 rounded-lg hover:bg-gray-800 transition">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <div id="modal-body" class="p-6 overflow-y-auto space-y-4 text-xs text-gray-300 leading-relaxed">
+        <!-- Injected via JS -->
+      </div>
+      <div class="p-4 border-t border-gray-800 bg-gray-950/60 flex justify-end">
+        <button onclick="closeModal()" class="px-4 py-2 rounded-lg bg-brand-600 hover:bg-brand-500 text-white font-semibold text-xs transition">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPT LOGIC -->
+  <script>
+    // State
+    let currentSnippets = {};
+    let currentSnippetFormat = 'markdown';
+    let currentBadgeStyle = 'banner';
+    let currentOwner = 'tiangolo';
+    let currentRepo = 'fastapi';
+    let directoryData = [];
+
+    // Initialize Lucide Icons
+    function updateIcons() {
+      if (window.lucide) {
+        lucide.createIcons();
+      }
+    }
+
+    // Trust & Compliance Modals
+    const modalTexts = {
+      privacy: {
+        title: "Privacy Policy",
+        html: `
+          <p class="font-semibold text-white">Last Updated: October 2026</p>
+          <p><strong>1. Information We Collect:</strong> ReadmePay collects publicly available repository metadata from the GitHub REST API (such as star counts, primary programming language, and CI/CD status). For maintainers choosing to connect their GitHub accounts, we temporarily request read-only profile information and collaborator access permissions via the official GitHub OAuth service.</p>
+          <p><strong>2. Use of Information:</strong> GitHub OAuth access tokens are used strictly and solely to confirm repository ownership or administrative privileges. We never request access to private code, never modify commit history, and never store repository contents or private user credentials.</p>
+          <p><strong>3. Analytics & Cookies:</strong> We do not use third-party behavioral trackers or selling cookies. Badge impression analytics use one-way salted SHA-256 hashes to prevent fraudulent impression manipulation without recording identifiable personal IP histories.</p>
+          <p><strong>4. Payout Information:</strong> Maintainer payout destinations (such as PayPal email addresses or public crypto wallet addresses) are stored securely and used exclusively to disburse automated 50% revenue share distributions.</p>
+        `
+      },
+      terms: {
+        title: "Terms of Service",
+        html: `
+          <p class="font-semibold text-white">Last Updated: October 2026</p>
+          <p><strong>1. Acceptance:</strong> By accessing ReadmePay or embedding our dynamic SVG badges, maintainers and advertisers agree to these terms.</p>
+          <p><strong>2. Maintainer Eligibility:</strong> Repositories may only be claimed by legitimate maintainers possessing verifiable admin or write collaborator permissions verified via GitHub OAuth2 authentication.</p>
+          <p><strong>3. Advertising Standards:</strong> All sponsor campaigns must offer safe, legitimate software, developer tools, or developer infrastructure products. Deceptive ads, malware, illegal services, and fraudulent links are strictly prohibited and immediately purged.</p>
+          <p><strong>4. Revenue Distribution:</strong> Gross click revenue is partitioned strictly 50/50 between verified repository maintainers and platform operations, settled monthly via PayPal mass disbursements or crypto transfers upon meeting standard disbursement thresholds.</p>
+        `
+      },
+      security: {
+        title: "Security & GitHub OAuth Disclosure",
+        html: `
+          <div class="p-3 bg-brand-950/40 border border-brand-500/30 rounded-lg text-brand-300">
+            <strong>Legitimate Developer Verification:</strong> ReadmePay is an open-source monetization tool registered in the official GitHub Developer Directory.
+          </div>
+          <p><strong>Why We Use GitHub OAuth:</strong> To prevent scammers from maliciously claiming open-source repositories and collecting ad revenue intended for legitimate authors, we authenticate repository administrators using GitHub's official OAuth2 consent screen.</p>
+          <p><strong>Minimal Permissions Scope:</strong> We request only the standard <code>read:user</code> and <code>repo</code> permissions needed to verify collaborator status against GitHub's permissions API endpoint. We never request or require permission to write code or modify repository settings.</p>
+          <p><strong>Encryption Standards:</strong> All web endpoints use modern TLS 1.3 cryptographic suites with automated certificate rotation.</p>
+        `
+      }
+    };
+
+    function openModal(type) {
+      const data = modalTexts[type];
+      if (!data) return;
+      document.getElementById('modal-title').innerText = data.title;
+      document.getElementById('modal-body').innerHTML = data.html;
+      document.getElementById('trust-modal').classList.remove('hidden');
+      updateIcons();
+    }
+
+    function closeModal() {
+      document.getElementById('trust-modal').classList.add('hidden');
+    }
+
+    // Switch Tabs
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      const activeContent = document.getElementById(`tab-${tabId}`);
+      if (activeContent) activeContent.classList.remove('hidden');
+
+      document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('tab-active'));
+      const activeNav = document.getElementById(`nav-${tabId}`);
+      if (activeNav) activeNav.classList.add('tab-active');
+
+      if (tabId === 'directory') loadDirectory();
+      if (tabId === 'sponsors') loadSponsors();
+      if (tabId === 'revenue') searchRevenue(1);
+
+      updateIcons();
+    }
+
+    // Badge Studio
+    function setStudioRepo(owner, repo) {
+      document.getElementById('input-owner').value = owner;
+      document.getElementById('input-repo').value = repo;
+      renderStudioBadge();
+    }
+
+    function setStudioStyle(style) {
+      currentBadgeStyle = style;
+      const bannerBtn = document.getElementById('btn-style-banner');
+      const shieldBtn = document.getElementById('btn-style-shield');
+      if (style === 'shield') {
+        shieldBtn.className = 'px-2.5 py-1 text-xs rounded font-medium text-brand-300 bg-brand-500/15 border border-brand-500/30 transition flex items-center space-x-1';
+        bannerBtn.className = 'px-2.5 py-1 text-xs rounded font-medium text-gray-400 hover:text-gray-200 transition flex items-center space-x-1';
+      } else {
+        bannerBtn.className = 'px-2.5 py-1 text-xs rounded font-medium text-brand-300 bg-brand-500/15 border border-brand-500/30 transition flex items-center space-x-1';
+        shieldBtn.className = 'px-2.5 py-1 text-xs rounded font-medium text-gray-400 hover:text-gray-200 transition flex items-center space-x-1';
+      }
+      renderStudioBadge();
+    }
+
+    async function renderStudioBadge() {
+      const owner = document.getElementById('input-owner').value.trim();
+      const repo = document.getElementById('input-repo').value.trim();
+      if (!owner || !repo) return;
+
+      currentOwner = owner;
+      currentRepo = repo;
+
+      const refreshIcon = document.getElementById('icon-refresh');
+      if (refreshIcon) refreshIcon.classList.add('animate-spin');
+
+      const img = document.getElementById('badge-preview-img');
+      const timestamp = new Date().getTime();
+      const styleQuery = currentBadgeStyle === 'shield' ? '&style=shield' : '';
+      img.src = `/badge/${owner}/${repo}.svg?t=${timestamp}${styleQuery}`;
+
+      try {
+        const res = await fetch(`/api/repos/${owner}/${repo}/preview`);
+        if (res.ok) {
+          const data = await res.json();
+          currentSnippets = data.snippets;
+          updateSnippetBox();
+
+          document.getElementById('preview-stars').innerHTML = `<i data-lucide="star" class="w-3.5 h-3.5 text-yellow-400"></i><span>${(data.stars || 0).toLocaleString()} stars</span>`;
+          document.getElementById('preview-lang').innerHTML = `<i data-lucide="code" class="w-3.5 h-3.5 text-cyan-400"></i><span>${data.primary_language || 'General'}</span>`;
+          
+          const sponsorText = data.matched_ad ? `${data.matched_ad.sponsor_name} ($${data.matched_ad.cpc} CPC)` : 'Platform Onboarding';
+          document.getElementById('preview-sponsor').innerHTML = `<i data-lucide="heart" class="w-3.5 h-3.5 text-pink-400"></i><span>${sponsorText}</span>`;
+
+          document.getElementById('btn-test-click').href = data.click_url;
+        } else {
+          // Fallback snippets directly
+          const styleParam = currentBadgeStyle === 'shield' ? '?style=shield' : '';
+          currentSnippets = {
+            markdown: `[![Sponsorship Badge](${window.location.origin}/badge/${owner}/${repo}.svg${styleParam})](${window.location.origin}/maintainers/claim?repo=${owner}/${repo})`,
+            html: `<a href="${window.location.origin}/maintainers/claim?repo=${owner}/${repo}"><img src="${window.location.origin}/badge/${owner}/${repo}.svg${styleParam}" alt="Sponsorship Badge" /></a>`,
+            rst: `.. image:: ${window.location.origin}/badge/${owner}/${repo}.svg${styleParam}\n   :target: ${window.location.origin}/maintainers/claim?repo=${owner}/${repo}`,
+            badge_url: `${window.location.origin}/badge/${owner}/${repo}.svg${styleParam}`,
+            click_url: `${window.location.origin}/maintainers/claim?repo=${owner}/${repo}`
+          };
+          updateSnippetBox();
+        }
+      } catch (err) {
+        console.error("Preview fetch error:", err);
+      } finally {
+        if (refreshIcon) refreshIcon.classList.remove('animate-spin');
+        updateIcons();
+      }
+    }
+
+    function setSnippetTab(format) {
+      currentSnippetFormat = format;
+      document.querySelectorAll('.snip-tab-btn').forEach(btn => {
+        btn.className = 'snip-tab-btn px-2.5 py-1 text-xs rounded-md font-medium text-gray-400 hover:text-gray-200';
+      });
+      const activeBtn = document.getElementById(`btn-snip-${format}`);
+      if (activeBtn) {
+        activeBtn.className = 'snip-tab-btn px-2.5 py-1 text-xs rounded-md font-medium text-brand-300 bg-brand-500/10 border border-brand-500/30';
+      }
+      updateSnippetBox();
+    }
+
+    function getActiveBaseUrl() {
+      const custom = document.getElementById('input-base-url')?.value.trim();
+      if (custom) return custom.replace(/\/+$/, '');
+      return window.location.origin;
+    }
+
+    function updateSnippetBox() {
+      const box = document.getElementById('snippet-code-box');
+      if (!currentSnippets) return;
+
+      const base = getActiveBaseUrl();
+      const styleParam = currentBadgeStyle === 'shield' ? '?style=shield' : '';
+      const badgeUrl = `${base}/badge/${currentOwner}/${currentRepo}.svg${styleParam}`;
+      const clickUrl = (currentSnippets.click_url && currentSnippets.click_url.includes('/click/')) 
+        ? `${base}/click/active/${currentSnippets.repo_id || 1}` 
+        : `${base}/maintainers/claim?repo=${currentOwner}/${currentRepo}`;
+
+      const markdown = `[![Sponsorship Badge](${badgeUrl})](${clickUrl})`;
+      const html = `<a href="${clickUrl}"><img src="${badgeUrl}" alt="Sponsorship Badge" /></a>`;
+      const rst = `.. image:: ${badgeUrl}\n   :target: ${clickUrl}\n   :alt: Sponsorship Badge`;
+
+      if (currentSnippetFormat === 'markdown') {
+        box.value = markdown;
+      } else if (currentSnippetFormat === 'html') {
+        box.value = html;
+      } else if (currentSnippetFormat === 'rst') {
+        box.value = rst;
+      } else if (currentSnippetFormat === 'urls') {
+        box.value = `Badge SVG: ${badgeUrl}\nClick Redirect: ${clickUrl}`;
+      }
+    }
+
+    function copyCommand(cmd) {
+      navigator.clipboard.writeText(cmd).then(() => {
+        const box = document.getElementById('snippet-code-box');
+        const prev = box.value;
+        box.value = `Tunnel Command Copied: ${cmd}\nRun this in a terminal to expose port 8080 publicly, then paste your tunnel URL into 'Badge Host / Public URL'.`;
+        setTimeout(() => { updateSnippetBox(); }, 3500);
+      });
+    }
+
+    function copyCurrentSnippet() {
+      const box = document.getElementById('snippet-code-box');
+      if (!box.value) return;
+      navigator.clipboard.writeText(box.value).then(() => {
+        const btnText = document.getElementById('copy-btn-text');
+        btnText.innerText = 'Copied!';
+        setTimeout(() => { btnText.innerText = 'Copy Snippet'; }, 2000);
+      });
+    }
+
+    function handlePreviewError() {
+      document.getElementById('preview-meta').innerHTML = `<span class="text-rose-400 font-semibold">Repository not found or network error.</span>`;
+    }
+
+    function claimCurrentRepo() {
+      switchTab('maintainer');
+      document.getElementById('claim-owner').value = currentOwner;
+      document.getElementById('claim-name').value = currentRepo;
+      const oauthOwner = document.getElementById('oauth-claim-owner');
+      const oauthRepo = document.getElementById('oauth-claim-repo');
+      if (oauthOwner) oauthOwner.value = currentOwner;
+      if (oauthRepo) oauthRepo.value = currentRepo;
+    }
+
+    function launchGitHubOAuthClaim() {
+      const owner = document.getElementById('oauth-claim-owner')?.value.trim();
+      const repo = document.getElementById('oauth-claim-repo')?.value.trim();
+      const payout = document.getElementById('oauth-claim-payout')?.value.trim();
+
+      if (!owner || !repo) {
+        alert("Please enter both the GitHub Owner and Repository name before connecting with GitHub.");
+        return;
+      }
+
+      let url = '/api/auth/github/login';
+      const params = new URLSearchParams();
+      params.append('repo_owner', owner);
+      params.append('repo_name', repo);
+      if (payout) params.append('payout_address', payout);
+
+      url += '?' + params.toString();
+      window.location.href = url;
+    }
+
+    // Maintainer Claim Submission handled exclusively via launchGitHubOAuthClaim()
+
+    // Revenue Lookup
+    async function searchRevenue(queryParam) {
+      const q = queryParam || document.getElementById('revenue-search-input').value.trim() || '1';
+      try {
+        let res;
+        if (!isNaN(q)) {
+          res = await fetch(`/revenue/${q}`);
+        } else if (q.includes('/')) {
+          const parts = q.split('/');
+          res = await fetch(`/api/repos/${parts[0]}/${parts[1]}/revenue`);
+        } else {
+          res = await fetch(`/revenue/maintainers/${q}`);
+        }
+
+        if (res.ok) {
+          const data = await res.json();
+          const gross = data.gross_revenue || data.total_revenue || 0;
+          const maintainer = data.maintainer_payout || data.maintainer_share || data.maintainer_earnings || (gross * 0.5);
+          const platform = data.platform_fee || data.platform_cut || (gross * 0.5);
+          const clicks = data.total_clicks || data.clicks_count || 0;
+          const impressions = data.total_impressions || data.impressions_count || 0;
+          const ctr = impressions > 0 ? ((clicks / impressions) * 100).toFixed(1) : '0.0';
+
+          document.getElementById('kpi-gross').innerText = `$${Number(gross).toFixed(2)}`;
+          document.getElementById('kpi-maintainer').innerText = `$${Number(maintainer).toFixed(2)}`;
+          document.getElementById('kpi-platform').innerText = `$${Number(platform).toFixed(2)}`;
+          document.getElementById('kpi-clicks').innerText = `${clicks} Clicks`;
+          document.getElementById('kpi-impressions').innerText = `${impressions} Impressions (${ctr}% CTR)`;
+
+          document.getElementById('rev-cell-gross').innerText = `$${Number(gross).toFixed(2)}`;
+          document.getElementById('rev-cell-maintainer').innerText = `$${Number(maintainer).toFixed(2)}`;
+          document.getElementById('rev-cell-platform').innerText = `$${Number(platform).toFixed(2)}`;
+          document.getElementById('rev-cell-clicks').innerText = clicks;
+          document.getElementById('rev-cell-impressions').innerText = impressions;
+
+          const title = data.repository_name ? `Repository Revenue: ${data.repository_name}` : `Maintainer Ledger: ${q}`;
+          document.getElementById('revenue-report-title').innerText = title;
+        }
+      } catch (err) {
+        console.error("Revenue lookup failed:", err);
+      }
+    }
+
+    // Sponsors Catalog & Campaign Creation
+    function openCreateCampaignModal() {
+      document.getElementById('modal-campaign').classList.remove('hidden');
+      updateIcons();
+    }
+
+    function closeCampaignModal() {
+      document.getElementById('modal-campaign').classList.add('hidden');
+    }
+
+    async function submitNewCampaign(e) {
+      e.preventDefault();
+      const sponsorName = document.getElementById('ad-sponsor-name').value.trim();
+      const headline = document.getElementById('ad-headline').value.trim();
+      const cta = document.getElementById('ad-cta').value.trim();
+      const lang = document.getElementById('ad-target-lang').value;
+      const clickUrl = document.getElementById('ad-click-url').value.trim();
+      const budget = parseFloat(document.getElementById('ad-budget').value);
+      const cpc = parseFloat(document.getElementById('ad-cpc').value);
+      const paymentMethod = document.querySelector('input[name="payment_method"]:checked')?.value || 'paypal';
+
+      const btn = document.getElementById('btn-create-campaign');
+      const statusBox = document.getElementById('campaign-submit-status');
+
+      btn.disabled = true;
+      btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span>Initializing Checkout...</span>`;
+      statusBox.classList.add('hidden');
+      updateIcons();
+
+      try {
+        // Step 1: Create campaign in platform database
+        const resCreate = await fetch('/api/inventory/ads', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            sponsor_name: sponsorName,
+            headline: headline,
+            call_to_action: cta,
+            target_language: lang,
+            click_url: clickUrl,
+            initial_budget: budget,
+            cost_per_click: cpc
+          })
+        });
+
+        if (!resCreate.ok) {
+          const errData = await resCreate.json();
+          throw new Error(errData.detail || 'Failed to create campaign record.');
+        }
+
+        const campaign = await resCreate.json();
+        const adId = campaign.ad_id;
+
+        // Step 2: Route directly to chosen payment gateway
+        if (paymentMethod === 'paypal') {
+          const resOrder = await fetch('/api/billing/paypal/create-order', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              ad_id: adId,
+              amount: budget,
+              currency: 'USD',
+              return_url: `${window.location.origin}/app?tab=sponsors&deposit=success&ad_id=${adId}`,
+              cancel_url: `${window.location.origin}/app?tab=sponsors&deposit=cancelled`
+            })
+          });
+
+          if (!resOrder.ok) {
+            const errOrder = await resOrder.json();
+            throw new Error(errOrder.detail || 'PayPal checkout initialization failed.');
+          }
+
+          const orderData = await resOrder.json();
+          if (orderData.approve_url) {
+            window.location.href = orderData.approve_url;
+            return;
+          } else {
+            throw new Error("Missing approval URL from PayPal.");
+          }
+        } else if (paymentMethod === 'crypto') {
+          const resCrypto = await fetch('/api/billing/crypto/create-invoice', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              ad_id: adId,
+              amount_usd: budget,
+              pay_currency: 'usdc',
+              description: `Deposit for ad: ${sponsorName}`
+            })
+          });
+
+          if (!resCrypto.ok) {
+            const errCrypto = await resCrypto.json();
+            throw new Error(errCrypto.detail || 'Crypto invoice initialization failed.');
+          }
+
+          const invoiceData = await resCrypto.json();
+          statusBox.className = 'text-xs p-4 rounded-xl border border-brand-500/40 bg-brand-950/40 text-brand-200 space-y-2';
+          statusBox.innerHTML = `
+            <div class="font-bold text-sm text-white">Deposit ${invoiceData.pay_amount} ${invoiceData.pay_currency.toUpperCase()} to activate:</div>
+            <div class="bg-gray-950 p-2 rounded font-mono text-[11px] select-all break-all text-cyan-300">${invoiceData.pay_address}</div>
+            <p class="text-[11px] text-gray-400">Campaign activates automatically as soon as payment is confirmed on-chain.</p>
+          `;
+          statusBox.classList.remove('hidden');
+          loadSponsors();
+        }
+      } catch (err) {
+        statusBox.className = 'text-xs p-3 rounded-lg border border-rose-500/40 bg-rose-950/40 text-rose-200';
+        statusBox.innerText = `Error: ${err.message}`;
+        statusBox.classList.remove('hidden');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<i data-lucide="credit-card" class="w-4 h-4"></i><span>Continue to Payment Checkout</span>`;
+        updateIcons();
+      }
+    }
+
+    async function loadSponsors() {
+      try {
+        const res = await fetch('/api/inventory/ads');
+        if (res.ok) {
+          const data = await res.json();
+          const grid = document.getElementById('sponsors-grid');
+          grid.innerHTML = '';
+          data.ads.forEach(ad => {
+            const pct = ad.total_budget > 0 ? Math.round((ad.remaining_budget / ad.total_budget) * 100) : 100;
+            grid.innerHTML += `
+              <div class="glass-card rounded-xl p-5 space-y-3">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs uppercase font-bold px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">${ad.target_language}</span>
+                  <span class="text-xs font-semibold text-brand-400">$${ad.cpc.toFixed(2)} CPC</span>
+                </div>
+                <div>
+                  <h4 class="text-base font-bold text-white">${ad.sponsor_name}</h4>
+                  <p class="text-xs text-gray-400 mt-1">${ad.headline}</p>
+                </div>
+                <div class="space-y-1">
+                  <div class="flex justify-between text-[11px] text-gray-500">
+                    <span>Budget Remaining</span>
+                    <span>$${ad.remaining_budget.toFixed(2)}</span>
+                  </div>
+                  <div class="w-full bg-gray-800 rounded-full h-1.5 overflow-hidden">
+                    <div class="bg-brand-500 h-1.5 rounded-full" style="width: ${pct}%"></div>
+                  </div>
+                </div>
+                <a href="${ad.click_url}" target="_blank" class="block w-full text-center py-1.5 rounded bg-gray-800 hover:bg-gray-700 text-xs font-semibold text-gray-300 transition">
+                  ${ad.cta_text || 'Visit Sponsor'} &rarr;
+                </a>
+              </div>
+            `;
+          });
+          updateIcons();
+        }
+      } catch (err) {
+        console.error("Sponsors fetch error:", err);
+      }
+    }
+
+    // Repository Directory
+    async function loadDirectory() {
+      try {
+        const res = await fetch('/api/inventory/repos?limit=100');
+        if (res.ok) {
+          const data = await res.json();
+          directoryData = data.repositories;
+          renderDirectoryTable(directoryData);
+        }
+      } catch (err) {
+        console.error("Directory fetch error:", err);
+      }
+    }
+
+    function renderDirectoryTable(repos) {
+      const tbody = document.getElementById('directory-table-body');
+      tbody.innerHTML = '';
+      if (!repos.length) {
+        tbody.innerHTML = `<tr><td colspan="5" class="px-4 py-8 text-center text-gray-500">No repositories registered yet. Use the Badge Studio to search any GitHub repo.</td></tr>`;
+        return;
+      }
+      repos.forEach(r => {
+        const claimBadge = r.claimed 
+          ? `<span class="px-2 py-0.5 rounded bg-brand-500/10 text-brand-400 border border-brand-500/20 font-semibold">Claimed (@${r.maintainer_handle})</span>`
+          : `<span class="px-2 py-0.5 rounded bg-gray-800 text-gray-400 font-semibold">Unclaimed</span>`;
+
+        tbody.innerHTML += `
+          <tr class="hover:bg-gray-900/40 transition">
+            <td class="px-4 py-3 font-semibold text-white">
+              <a href="https://github.com/${r.full_name}" target="_blank" class="hover:text-brand-400 flex items-center space-x-1">
+                <span>${r.full_name}</span>
+                <i data-lucide="external-link" class="w-3 h-3 text-gray-500"></i>
+              </a>
+            </td>
+            <td class="px-4 py-3 text-gray-300">${r.primary_language || 'General'}</td>
+            <td class="px-4 py-3 font-mono text-yellow-400">${(r.stars || 0).toLocaleString()} &#9733;</td>
+            <td class="px-4 py-3">${claimBadge}</td>
+            <td class="px-4 py-3 text-right space-x-2">
+              <button onclick="setStudioRepo('${r.owner}', '${r.name}'); switchTab('studio');" class="px-2.5 py-1 rounded bg-brand-600/20 text-brand-300 hover:bg-brand-600 hover:text-white font-medium text-[11px] transition">Badge</button>
+              <button onclick="switchTab('revenue'); searchRevenue('${r.id}');" class="px-2.5 py-1 rounded bg-gray-800 text-gray-300 hover:bg-gray-700 font-medium text-[11px] transition">Ledger</button>
+            </td>
+          </tr>
+        `;
+      });
+      updateIcons();
+    }
+
+    function filterDirectoryTable() {
+      const q = document.getElementById('dir-search-input').value.toLowerCase();
+      const filtered = directoryData.filter(r => r.full_name.toLowerCase().includes(q) || (r.primary_language && r.primary_language.toLowerCase().includes(q)));
+      renderDirectoryTable(filtered);
+    }
+
+    // Auto-init on load
+    document.addEventListener('DOMContentLoaded', () => {
+      updateIcons();
+      const params = new URLSearchParams(window.location.search);
+      const tab = params.get('tab');
+      const owner = params.get('owner');
+      const repo = params.get('repo');
+      const claim = params.get('claim');
+
+      if (owner && repo) {
+        document.getElementById('input-owner').value = owner;
+        document.getElementById('input-repo').value = repo;
+        document.getElementById('claim-owner').value = owner;
+        document.getElementById('claim-name').value = repo;
+      } else if (claim && claim.includes('/')) {
+        const parts = claim.split('/');
+        document.getElementById('claim-owner').value = parts[0];
+        document.getElementById('claim-name').value = parts[1];
+      }
+
+      if (tab) {
+        switchTab(tab);
+      } else if (claim) {
+        switchTab('maintainer');
+      } else {
+        switchTab('studio');
+      }
+
+      renderStudioBadge();
+    });
+  </script>
+</body>
+</html>
